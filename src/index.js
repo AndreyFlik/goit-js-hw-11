@@ -25,7 +25,8 @@ btnLoadPick.addEventListener('click', () => {
       pages += 1;
       btnLoadPick.removeAttribute('disabled');
     })
-    .catch(error => Notiflix.Notify.failure(error));
+    // .catch(error => Notiflix.Notify.failure(error));
+    .catch(error => console.log(error));
 });
 
 formSubmit.addEventListener('submit', handleSubmit);
@@ -33,12 +34,12 @@ formSubmit.addEventListener('submit', handleSubmit);
 async function fetchPic(currentPick) {
   return await axios
     .get(
-      `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=5`,
+      `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=100`,
     )
     .then(res => {
       if (res.data.total === 0) {
         return Promise.reject(
-          'Sorry, there are no images matching your search query. Please try again.',
+          new Error('Sorry, there are no images matching your search query. Please try again.'),
         );
       }
       return res;
@@ -61,7 +62,8 @@ function handleSubmit(event) {
       pages += 1;
       btnLoadPick.removeAttribute('disabled');
     })
-    .catch(error => Notiflix.Notify.failure(error));
+    // .catch(error => Notiflix.Notify.failure(error));
+    .catch(error => console.log(error));
 }
 
 // function fetchPic(currentPick) {
@@ -78,13 +80,13 @@ function handleSubmit(event) {
 // }
 
 function renderPic(res) {
-  console.log(res.data.hits);
+  console.log(res);
   const markup = res.data.hits
     .map(picks => {
       // console.log(picks);
 
       return `<div class="photo-card">
-    <img src="${picks.largeImageURL}" alt="${picks.tags}" loading="lazy" width="100"/>
+    <img src="${picks.largeImageURL}" alt="${picks.tags}" loading="lazy" width="200"/>
     <div class="info">
       <p class="info-item">
         <b>Likes:${picks.likes}</b>
