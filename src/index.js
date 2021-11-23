@@ -38,7 +38,7 @@ function handleSubmit(event) {
   fetchPic(inputPickSearch)
     .then(res => {
       perpage = 40;
-
+      Notiflix.Notify.success(`Hooray! We found ${res.data.totalHits} images.`);
       renderPic(res);
       pages += 1;
       btnLoadPick.removeAttribute('disabled');
