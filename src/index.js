@@ -19,14 +19,22 @@ function resetPage() {
 
 btnLoadPick.addEventListener('click', () => {
   btnLoadPick.setAttribute('disabled', true);
+
   fetchPic(inputPickSearch)
     .then(res => {
-      renderPic(res);
-      pages += 1;
-      btnLoadPick.removeAttribute('disabled');
+      if (res.data.totalHits < 500) {
+        return Notiflix.Notify.failure(
+          "We're sorry, but you've reached the end of search results.",
+        );
+      } else {
+        console.log(res.data.hits);
+        renderPic(res);
+        pages += 1;
+        btnLoadPick.removeAttribute('disabled');
+      }
     })
-    // .catch(error => Notiflix.Notify.failure(error));
-    .catch(error => console.log(error));
+    .catch(error => Notiflix.Notify.failure(error.message));
+  // .catch(error => console.log(error));
 });
 
 formSubmit.addEventListener('submit', handleSubmit);
@@ -62,8 +70,8 @@ function handleSubmit(event) {
       pages += 1;
       btnLoadPick.removeAttribute('disabled');
     })
-    // .catch(error => Notiflix.Notify.failure(error));
-    .catch(error => console.log(error));
+    .catch(error => Notiflix.Notify.failure(error.message));
+  // .catch(error => console.log(error));
 }
 
 // function fetchPic(currentPick) {
