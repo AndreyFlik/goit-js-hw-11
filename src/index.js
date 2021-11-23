@@ -5,53 +5,22 @@ import Notiflix from 'notiflix';
 const formSubmit = document.querySelector('.search-form');
 const galaryMarkup = document.querySelector('.gallery');
 const btnLoadPick = document.querySelector('.load-more');
-// console.log(galaryMarkup);
 
 const MY_KEY = '24465879-ee592e630361e28095acfb740';
+
+let perpage = 0;
 
 let pages = 1;
 let inputPickSearch = '';
 
+let pg = 500; // Консоль
+
+btnLoadPick.addEventListener('click', loadMoreBtn);
+formSubmit.addEventListener('submit', handleSubmit);
+
 function resetPage() {
   galaryMarkup.innerHTML = '';
   pages = 1;
-}
-
-btnLoadPick.addEventListener('click', () => {
-  btnLoadPick.setAttribute('disabled', true);
-
-  fetchPic(inputPickSearch)
-    .then(res => {
-      if (res.data.totalHits < 500) {
-        return Notiflix.Notify.failure(
-          "We're sorry, but you've reached the end of search results.",
-        );
-      } else {
-        console.log(res.data.hits);
-        renderPic(res);
-        pages += 1;
-        btnLoadPick.removeAttribute('disabled');
-      }
-    })
-    .catch(error => Notiflix.Notify.failure(error.message));
-  // .catch(error => console.log(error));
-});
-
-formSubmit.addEventListener('submit', handleSubmit);
-
-async function fetchPic(currentPick) {
-  return await axios
-    .get(
-      `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=100`,
-    )
-    .then(res => {
-      if (res.data.total === 0) {
-        return Promise.reject(
-          new Error('Sorry, there are no images matching your search query. Please try again.'),
-        );
-      }
-      return res;
-    });
 }
 
 function handleSubmit(event) {
@@ -66,33 +35,63 @@ function handleSubmit(event) {
 
   fetchPic(inputPickSearch)
     .then(res => {
+      perpage = 40;
+
       renderPic(res);
       pages += 1;
       btnLoadPick.removeAttribute('disabled');
     })
     .catch(error => Notiflix.Notify.failure(error.message));
-  // .catch(error => console.log(error));
+
+  // fetchPic(inputPickSearch)
+  //   .then(res => {
+  //     console.dir(res.data.totalHits);
+  //     renderPic(res);
+  //     pages += 1;
+  //     btnLoadPick.removeAttribute('disabled');
+  //   })
+  //   // .catch(error => Notiflix.Notify.failure(error.message));
+  //   .catch(error => console.dir(error));
 }
 
-// function fetchPic(currentPick) {
-//   return fetch(
-//     `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true`,
-//   ).then(res => {
-//     if (res.status === 404) {
-//       return Promise.reject(
-//         new Error('Sorry, there are no images matching your search query. Please try again.'),
-//       );
-//     }
-//     return res.json();
-//   });
-// }
+function loadMoreBtn() {
+  btnLoadPick.setAttribute('disabled', true);
+
+  fetchPic(inputPickSearch)
+    .then(res => {
+      perpage += 40;
+      // pg -= 100; // Консоль
+      // console.log(pg); // Консоль
+      // console.log(res.data.hits.length); // Консоль
+      if (perpage >= Number(res.data.totalHits)) {
+        btnLoadPick.classList.add('visually-hidden');
+        return Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
+      } else {
+        console.dir(res.data.totalHits); // Консоль
+        renderPic(res);
+        pages += 1;
+        btnLoadPick.removeAttribute('disabled');
+      }
+    })
+    .catch(error => Notiflix.Notify.failure(error.message));
+}
+
+async function fetchPic(currentPick) {
+  const response = await axios.get(
+    `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=40`,
+  );
+
+  if (response.data.total === 0) {
+    return Promise.reject(
+      new Error('Sorry, there are no images matching your search query. Please try again.'),
+    );
+  }
+  return response;
+}
 
 function renderPic(res) {
-  console.log(res);
   const markup = res.data.hits
     .map(picks => {
-      // console.log(picks);
-
       return `<div class="photo-card">
     <img src="${picks.largeImageURL}" alt="${picks.tags}" loading="lazy" width="200"/>
     <div class="info">
@@ -114,3 +113,30 @@ function renderPic(res) {
     .join('');
   galaryMarkup.insertAdjacentHTML('afterbegin', markup);
 }
+
+// async function fetchPic(currentPick) {
+//   return await axios
+//     .get(
+//       `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=100`,
+//     )
+//     .then(res => {
+//       if (res.data.total === 0) {
+//         return Promise.reject(
+//           new Error('Sorry, there are no images matching your search query. Please try again.'),
+//         );
+//       }
+//       return res;
+//     });
+// }
+// function fetchPic(currentPick) {
+//   return fetch(
+//     `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true`,
+//   ).then(res => {
+//     if (res.status === 404) {
+//       return Promise.reject(
+//         new Error('Sorry, there are no images matching your search query. Please try again.'),
+//       );
+//     }
+//     return res.json();
+//   });
+// }
