@@ -29,7 +29,7 @@ function handleSubmit(event) {
   resetPage();
 
   inputPickSearch = event.target.searchQuery.value;
-  console.log(event.target.searchQuery.value);
+  // console.log(event.target.searchQuery.value);
 
   fetchPic(inputPickSearch)
     .then(res => {
@@ -53,7 +53,7 @@ function loadMoreBtn() {
         btnLoadPick.classList.add('visually-hidden');
         return Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
       } else {
-        console.dir(res.data.totalHits); // Консоль
+        // console.dir(res.data.totalHits); // Консоль
         renderPic(res);
         pages += 1;
         btnLoadPick.removeAttribute('disabled');
@@ -76,7 +76,7 @@ async function fetchPic(currentPick) {
 }
 
 function renderPic(res) {
-  console.log(res.data.hits);
+  // console.log(res.data.hits);
 
   const markup = res.data.hits
     .map(picks => {
