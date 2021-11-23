@@ -1,6 +1,10 @@
 import './css/styles.css';
 import axios from 'axios';
 import Notiflix from 'notiflix';
+// Описан в документации
+import SimpleLightbox from 'simplelightbox';
+// Дополнительный импорт стилей
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const formSubmit = document.querySelector('.search-form');
 const galaryMarkup = document.querySelector('.gallery');
@@ -81,26 +85,58 @@ function renderPic(res) {
   const markup = res.data.hits
     .map(picks => {
       return `<div class="photo-card">
-    <img src="${picks.largeImageURL}" alt="${picks.tags}" loading="lazy" width="200"/>
-    <div class="info">
-      <p class="info-item">
-        <b>Likes:${picks.likes}</b>
-      </p>
-      <p class="info-item">
-        <b>Views:${picks.views}</b>
-      </p>
-      <p class="info-item">
-        <b>Comments:${picks.comments}</b>
-      </p>
-      <p class="info-item">
-        <b>Downloads:${picks.downloads}</b>
-      </p>
-    </div>
-  </div>`;
+  <a href="${picks.webformatURL}"><img src="${picks.largeImageURL}" alt="${picks.tags}" loading="lazy" width="200"/></a>
+  <div class="info">
+    <p class="info-item">
+      <b>Likes:${picks.likes}</b>
+    </p>
+    <p class="info-item">
+      <b>Views:${picks.views}</b>
+    </p>
+    <p class="info-item">
+      <b>Comments:${picks.comments}</b>
+    </p>
+    <p class="info-item">
+      <b>Downloads:${picks.downloads}</b>
+    </p>
+  </div>
+</div>`;
     })
     .join('');
   galaryMarkup.insertAdjacentHTML('afterbegin', markup);
+  var lightbox = new SimpleLightbox('.gallery a', {
+    /* options */
+    captionsData: 'alt',
+    captionDelay: 250,
+  }).refresh();
 }
+
+// function renderPic(res) {
+//   // console.log(res.data.hits);
+
+//   const markup = res.data.hits
+//     .map(picks => {
+//       return `<div class="photo-card">
+//     <img src="${picks.largeImageURL}" alt="${picks.tags}" loading="lazy" width="200"/>
+//     <div class="info">
+//       <p class="info-item">
+//         <b>Likes:${picks.likes}</b>
+//       </p>
+//       <p class="info-item">
+//         <b>Views:${picks.views}</b>
+//       </p>
+//       <p class="info-item">
+//         <b>Comments:${picks.comments}</b>
+//       </p>
+//       <p class="info-item">
+//         <b>Downloads:${picks.downloads}</b>
+//       </p>
+//     </div>
+//   </div>`;
+//     })
+//     .join('');
+//   galaryMarkup.insertAdjacentHTML('afterbegin', markup);
+// }
 
 // async function fetchPic(currentPick) {
 //   return await axios
