@@ -13,8 +13,6 @@ let perpage = 0;
 let pages = 1;
 let inputPickSearch = '';
 
-let pg = 500; // Консоль
-
 btnLoadPick.addEventListener('click', loadMoreBtn);
 formSubmit.addEventListener('submit', handleSubmit);
 
@@ -42,16 +40,6 @@ function handleSubmit(event) {
       btnLoadPick.removeAttribute('disabled');
     })
     .catch(error => Notiflix.Notify.failure(error.message));
-
-  // fetchPic(inputPickSearch)
-  //   .then(res => {
-  //     console.dir(res.data.totalHits);
-  //     renderPic(res);
-  //     pages += 1;
-  //     btnLoadPick.removeAttribute('disabled');
-  //   })
-  //   // .catch(error => Notiflix.Notify.failure(error.message));
-  //   .catch(error => console.dir(error));
 }
 
 function loadMoreBtn() {
@@ -60,9 +48,7 @@ function loadMoreBtn() {
   fetchPic(inputPickSearch)
     .then(res => {
       perpage += 40;
-      // pg -= 100; // Консоль
-      // console.log(pg); // Консоль
-      // console.log(res.data.hits.length); // Консоль
+
       if (perpage >= Number(res.data.totalHits)) {
         btnLoadPick.classList.add('visually-hidden');
         return Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
@@ -90,6 +76,8 @@ async function fetchPic(currentPick) {
 }
 
 function renderPic(res) {
+  console.log(res.data.hits);
+
   const markup = res.data.hits
     .map(picks => {
       return `<div class="photo-card">
