@@ -12,6 +12,8 @@ const btnLoadPick = document.querySelector('.load-more');
 
 const MY_KEY = '24465879-ee592e630361e28095acfb740';
 
+let lightLiteBox = null;
+
 let perpage = 0;
 
 let pages = 1;
@@ -42,6 +44,11 @@ function handleSubmit(event) {
       renderPic(res);
       pages += 1;
       btnLoadPick.removeAttribute('disabled');
+      lightLiteBox = new SimpleLightbox('.gallery a', {
+        /* options */
+        captionsData: 'alt',
+        captionDelay: 250,
+      });
     })
     .catch(error => Notiflix.Notify.failure(error.message));
 }
@@ -61,6 +68,7 @@ function loadMoreBtn() {
         renderPic(res);
         pages += 1;
         btnLoadPick.removeAttribute('disabled');
+        lightLiteBox.refresh();
       }
     })
     .catch(error => Notiflix.Notify.failure(error.message));
@@ -85,7 +93,7 @@ function renderPic(res) {
   const markup = res.data.hits
     .map(picks => {
       return `<div class="photo-card">
-  <a href="${picks.webformatURL}"><img src="${picks.largeImageURL}" alt="${picks.tags}" loading="lazy" width="200"/></a>
+  <a href="${picks.largeImageURL}"><img src="${picks.webformatURL}" alt="${picks.tags}" loading="lazy" width="200"/></a>
   <div class="info">
     <p class="info-item">
       <b>Likes:${picks.likes}</b>
@@ -104,12 +112,11 @@ function renderPic(res) {
     })
     .join('');
   galaryMarkup.insertAdjacentHTML('afterbegin', markup);
-  var lightbox = new SimpleLightbox('.gallery a', {
-    /* options */
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
-  lightbox.refresh();
+  // var lightbox = new SimpleLightbox('.gallery a', {
+  //   /* options */
+  //   captionsData: 'alt',
+  //   captionDelay: 250,
+  // }).refresh();
 }
 
 // function renderPic(res) {
