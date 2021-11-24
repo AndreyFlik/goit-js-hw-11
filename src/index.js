@@ -108,7 +108,8 @@ function renderPic(res) {
     /* options */
     captionsData: 'alt',
     captionDelay: 250,
-  }).refresh();
+  });
+  lightbox.refresh();
 }
 
 // function renderPic(res) {
