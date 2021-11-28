@@ -38,3 +38,7 @@ body {
 .btn-dsbl {
   cursor: not-allowed;
 }
+
+body {
+  background-color: tomato;
+}

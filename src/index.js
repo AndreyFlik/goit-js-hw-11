@@ -5,6 +5,13 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 // Дополнительный импорт стилей
 import 'simplelightbox/dist/simple-lightbox.min.css';
+// var spinner = new Spin.Spinner(opts).spin(target);
+// import { h } from 'vue';
+// import 'vue-loading-overlay/dist/vue-loading.css';
+
+// import { Spinner } from 'spin.js';
+// var target = document.getElementById('foo');
+import 'js-loading-overlay';
 
 const formSubmit = document.querySelector('.search-form');
 const galaryMarkup = document.querySelector('.gallery');
@@ -39,7 +46,7 @@ function handleSubmit(event) {
 
   fetchPic(inputPickSearch)
     .then(res => {
-      perpage = 40;
+      perpage = 5;
       Notiflix.Notify.success(`Hooray! We found ${res.data.totalHits} images.`);
       renderPic(res);
       pages += 1;
@@ -58,7 +65,7 @@ function loadMoreBtn() {
 
   fetchPic(inputPickSearch)
     .then(res => {
-      perpage += 40;
+      perpage += 5;
 
       if (perpage >= Number(res.data.totalHits)) {
         btnLoadPick.classList.add('visually-hidden');
@@ -73,10 +80,43 @@ function loadMoreBtn() {
     })
     .catch(error => Notiflix.Notify.failure(error.message));
 }
-
+var configs = {
+  overlayBackgroundColor: '#666666',
+  overlayOpacity: 0.6,
+  spinnerIcon: 'ball-circus',
+  spinnerColor: '#000',
+  spinnerSize: '3x',
+  overlayIDName: 'overlay',
+  spinnerIDName: 'spinner',
+  offsetY: 0,
+  offsetX: 0,
+  lockScroll: false,
+  containerID: null,
+};
 async function fetchPic(currentPick) {
+  JsLoadingOverlay.show(configs);
+  // var spinner = new Spinner({ color: '#00ffd5', lines: 12, scale: 10 }).spin(target);
+  // let loader = this.$loading.show(
+  //   {
+  //     // Pass props by their camelCased names
+  //     container: this.$refs.loadingContainer,
+  //     canCancel: true, // default false
+  //     onCancel: this.yourCallbackMethod,
+  //     color: '#000000',
+  //     loader: 'spinner',
+  //     width: 64,
+  //     height: 64,
+  //     backgroundColor: '#ffffff',
+  //     opacity: 0.5,
+  //     zIndex: 999,
+  //   },
+  //   {
+  //     // Pass slots by their names
+  //     default: h('your-custom-loader-component-name'),
+  //   },
+  // );
   const response = await axios.get(
-    `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=40`,
+    `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=5`,
   );
 
   if (response.data.total === 0) {
@@ -84,6 +124,9 @@ async function fetchPic(currentPick) {
       new Error('Sorry, there are no images matching your search query. Please try again.'),
     );
   }
+  // loader.hide();
+  // spinner.stop();
+  JsLoadingOverlay.hide();
   return response;
 }
 
@@ -111,7 +154,8 @@ function renderPic(res) {
 </div>`;
     })
     .join('');
-  galaryMarkup.insertAdjacentHTML('afterbegin', markup);
+  galaryMarkup.insertAdjacentHTML('beforeend', markup);
+
   // var lightbox = new SimpleLightbox('.gallery a', {
   //   /* options */
   //   captionsData: 'alt',
