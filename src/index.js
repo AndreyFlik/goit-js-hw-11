@@ -95,26 +95,7 @@ var configs = {
 };
 async function fetchPic(currentPick) {
   JsLoadingOverlay.show(configs);
-  // var spinner = new Spinner({ color: '#00ffd5', lines: 12, scale: 10 }).spin(target);
-  // let loader = this.$loading.show(
-  //   {
-  //     // Pass props by their camelCased names
-  //     container: this.$refs.loadingContainer,
-  //     canCancel: true, // default false
-  //     onCancel: this.yourCallbackMethod,
-  //     color: '#000000',
-  //     loader: 'spinner',
-  //     width: 64,
-  //     height: 64,
-  //     backgroundColor: '#ffffff',
-  //     opacity: 0.5,
-  //     zIndex: 999,
-  //   },
-  //   {
-  //     // Pass slots by their names
-  //     default: h('your-custom-loader-component-name'),
-  //   },
-  // );
+
   const response = await axios.get(
     `https://pixabay.com/api/?key=${MY_KEY}&q=${currentPick}&image_type=photo&orientation=horizontal&safesearch=true&page=${pages}&per_page=5`,
   );
